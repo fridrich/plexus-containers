@@ -15,7 +15,6 @@
 package org.codehaus.plexus.metadata;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -23,7 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.maven.plugin.MojoExecutionException;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.metadata.gleaner.AnnotationComponentGleaner;
@@ -81,19 +79,10 @@ public class ClassComponentDescriptorExtractor extends ComponentDescriptorExtrac
 
         // Add the projects dependencies
         for (String filename : elements) {
-            try {
-                list.add(new File(filename).toURI().toURL());
-            } catch (MalformedURLException e) {
-                throw new MojoExecutionException("Invalid classpath entry: " + filename, e);
-            }
+            list.add(new File(filename).toURI().toURL());
         }
 
         URL[] urls = list.toArray(new URL[list.size()]);
-
-        // getLogger().debug( "Classpath:" );
-        for (URL url : urls) {
-            // getLogger().debug( "    " + urls[i] );
-        }
 
         return new URLClassLoader(urls, null);
     }

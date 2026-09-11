@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<antlib>
+  <taskdef name="plexus-metadata" classname="org.codehaus.plexus.metadata.ant.PlexusMetadataTask"/>
+</antlib>

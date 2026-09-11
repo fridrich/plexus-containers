@@ -19,6 +19,7 @@
   <modules>
     <module>plexus-component-annotations</module>
     <module>plexus-component-metadata</module>
+    <module>plexus-metadata-generator</module>
   </modules>
 
   <scm>
