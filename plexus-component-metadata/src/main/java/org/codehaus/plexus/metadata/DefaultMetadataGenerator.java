@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +40,9 @@ import org.codehaus.plexus.component.repository.ComponentDependency;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentSetDescriptor;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
+import org.codehaus.plexus.logging.Logger;
+import org.codehaus.plexus.logging.console.ConsoleLogger;
+import org.codehaus.plexus.metadata.merge.ComponentsXmlMerger;
 import org.codehaus.plexus.metadata.merge.Merger;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
@@ -61,6 +65,16 @@ public class DefaultMetadataGenerator extends AbstractLogEnabled implements Meta
 
     public void generateDescriptor(MetadataGenerationRequest request) throws Exception {
         assert request.outputFile != null;
+
+        if (merger == null) {
+            merger = new ComponentsXmlMerger();
+        }
+
+        if (extractorMap == null) {
+            extractorMap = new LinkedHashMap<String, ComponentDescriptorExtractor>();
+            extractorMap.put("class", new ClassComponentDescriptorExtractor());
+            extractorMap.put("source", new SourceComponentDescriptorExtractor());
+        }
 
         List<String> extractorHints = request.extractors;
 
@@ -164,5 +178,15 @@ public class DefaultMetadataGenerator extends AbstractLogEnabled implements Meta
         }
 
         getLogger().debug("Wrote: " + outputFile);
+    }
+
+    @Override
+    protected Logger getLogger() {
+        Logger logger = super.getLogger();
+        if (logger == null) {
+            logger = new ConsoleLogger(Logger.LEVEL_INFO, "console");
+            enableLogging(logger);
+        }
+        return logger;
     }
 }
